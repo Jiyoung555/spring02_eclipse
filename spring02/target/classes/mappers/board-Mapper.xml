@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper 만드는 이유: 혼자는 dao에 줄줄이 써도 되지만, 협업할 때는 mapper에 따로 sql문 빼놓기  (DB 업무 분업)-->
+<!-- spring boot & jpa 쓰는 내 프로젝트는 mapper 필요x. 
+1) query annotation 사용하거나 (@query해서 sql문 쓸 수 있음) 
+2) jpql 사용 (내가 이렇게 함)
+3) 만약 mapper 파일처럼 따로 빼놓고 싶으면 xml, yaml, txt 파일로 뺄 수 있을 듯 -->
+<mapper namespace="com.myproject.myapp.mapper.BoardMapper">
+
+	<!-- 생성 -->
+	<insert id="create">
+		insert into board (title, content, writer) 
+		values(#{title}, #{content}, #{writer})
+	</insert>
+	
+	<!-- 조회 -->
+	<select id="read" resultType="com.myproject.myapp.domain.BoardVO">
+		select 
+		  bno, title, content, writer, regdate, viewcnt 
+		from 
+		  board 
+		where bno = #{bno}
+	</select>
+	
+	<!-- 수정 -->
+	<update id="update">
+		update board set title =#{title}, content =#{content} 
+		where bno = #{bno}
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id="delete">
+		delete from board where bno = #{bno}
+	</delete>
+	
+	
+	<!-- ListAll(전체 글목록) -->
+	<select id="listAll" resultType="com.myproject.myapp.domain.BoardVO">
+	<![CDATA[
+		select 
+		  bno, title, content, writer, regdate, viewcnt 
+		from 
+		  board 
+		where bno > 0 
+		order by bno desc, regdate desc
+	]]>  
+	</select>
+
+</mapper>
